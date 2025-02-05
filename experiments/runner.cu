@@ -89,6 +89,12 @@ void run_sgemm_coalesce(int M, int N, int K, float *A, float *B, float *C) {
     sgemm_coalesce<32><<<gridDim, blockDim>>>(M, N, K, A, B, C);
 }
 
+void run_sgemm_smem(int M, int N, int K, float *A, float *B, float *C) {
+    dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
+    dim3 blockDim(32 * 32);
+    sgemm_smem<32><<<gridDim, blockDim>>>(M, N, K, A, B, C);
+}
+
 void run_kernel(int kernel_num, int M, int N, int K, float *A, float *B, float *C, cublasHandle_t handle) {
     switch(kernel_num) {
         case 0:
@@ -99,6 +105,9 @@ void run_kernel(int kernel_num, int M, int N, int K, float *A, float *B, float *
             break;
         case 2:
             run_sgemm_coalesce(M, N, K, A, B, C);
+            break;
+        case 3:
+            run_sgemm_smem(M, N, K, A, B, C);
             break;
         default:
             throw std::invalid_argument("Unknown kernel number");
