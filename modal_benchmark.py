@@ -63,26 +63,26 @@ def execute_command(command: str):
     allow_concurrent_inputs=4,
     container_idle_timeout=900,
     mounts=[modal.Mount.from_local_dir("./", remote_path="/root/")],
-    # volumes={"/cuda-env": modal.Volume.from_name("cuda-env")},
 )
 def run_benchmark(compile_command: str, run_command: str):
+    # Add debugging commands
     execute_command("pwd")
-    execute_command("ls")
+    execute_command("ls -la")
+    execute_command("ls -la experiments/")
+    
+    print("\nCompiling with command:", compile_command)
     execute_command(compile_command)
+    
+    print("\nRunning with command:", run_command)
+    execute_command("ls -la")  # Verify the executable was created
     execute_command(run_command)
-    # timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    # execute_command("mkdir report1_" + timestamp)
-    # execute_command("mv /root/report1.nsys-rep /root/report1_" + timestamp + "/")
-    # execute_command("mv /root/report1.qdstrm /root/report1_" + timestamp + "/")
-    # execute_command("mv /root/report1_" + timestamp + "/" + " /cuda-env/")
     return None
 @stub.local_entrypoint()
 def inference_main(compile_command: str, run_command: str):
-    compile_command = "nvcc -o run_kernels experiments/run_kernels.cpp experiments/kernels/sgemm_naive.cu -lcublas -lcudart -I."
+    # Update compile command to use absolute paths
+    compile_command = "nvcc -o /root/run_kernels /root/experiments/run_kernels.cu /root/experiments/runner.cu -lcublas -lcudart -I/root/experiments"
     
-    # Define execution command
-    run_command = "./run_kernels"
+    run_command = "/root/run_kernels 2"
     
-    # Run the benchmark
     results = run_benchmark.remote(compile_command, run_command)
     return results
