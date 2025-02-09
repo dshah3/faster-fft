@@ -3,7 +3,7 @@
 #include "kernels/sgemm_naive.cuh"
 #include "kernels/sgemm_coalesce.cuh"
 #include "kernels/sgemm_smem.cuh"
-// #include "kernels/4_kernel_1D_blocktiling.cuh"
+#include "kernels/sgemm_smem_1D_blocktiling.cuh"
 // #include "kernels/5_kernel_2D_blocktiling.cuh"
 // #include "kernels/6_kernel_vectorize.cuh"
 // #include "kernels/7_kernel_resolve_bank_conflicts.cuh"

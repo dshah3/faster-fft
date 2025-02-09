@@ -80,9 +80,9 @@ def run_benchmark(compile_command: str, run_command: str):
 @stub.local_entrypoint()
 def inference_main(compile_command: str, run_command: str):
     # Update compile command to use absolute paths
-    compile_command = "nvcc -o /root/run_kernels /root/experiments/run_kernels.cu /root/experiments/runner.cu -lcublas -lcudart -I/root/experiments"
-    
-    run_command = "/root/run_kernels 2"
+    compile_command = "nvcc --ptxas-options=-v -arch=sm_90 -o /root/run_kernels /root/experiments/run_kernels.cu /root/experiments/runner.cu -lcublas -lcudart -I/root/experiments"
+
+    run_command = "/root/run_kernels 4"
     
     results = run_benchmark.remote(compile_command, run_command)
     return results

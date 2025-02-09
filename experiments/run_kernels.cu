@@ -31,6 +31,8 @@ int main(int argc, char **argv) {
 
   printf("Running kernel %d on device %d.\n", kernel_num, deviceIdx);
 
+  CudaDeviceInfo();
+
   cublasHandle_t handle;
   if (cublasCreate(&handle)) {
     std::cerr << "Create cublas handle error." << std::endl;
